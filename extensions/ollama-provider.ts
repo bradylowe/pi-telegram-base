@@ -59,7 +59,8 @@ export default async function (pi: ExtensionAPI) {
 
 	const baseUrl = env("OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL);
 	const discovered = await installedModels(baseUrl);
-	const modelIds = discovered.length > 0 ? discovered : configuredModels();
+	const preferred = configuredModels();
+	const modelIds = [...new Set([...preferred, ...discovered])];
 	const maxTokens = Number(env("OLLAMA_MAX_TOKENS", "4096"));
 
 	pi.registerProvider("ollama", {

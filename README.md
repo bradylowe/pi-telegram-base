@@ -129,7 +129,7 @@ On Linux, containers may need Ollama bound to an address they can reach:
 OLLAMA_HOST=0.0.0.0:11434 ollama serve
 ```
 
-When Pi starts, the extension tries to discover installed models from `GET /api/tags`. If discovery is unavailable, it falls back to `OLLAMA_MODELS` or `OLLAMA_MODEL`. Use a comma-separated fallback list when you want models available even while Ollama is cold or temporarily unreachable:
+When Pi starts, the extension registers `OLLAMA_MODELS` or `OLLAMA_MODEL` first, then appends installed models discovered from `GET /api/tags`. Use a comma-separated list when you want to prefer multiple local models:
 
 ```env
 OLLAMA_MODELS=gemma4:26b-64k,qwen2.5-coder:7b
