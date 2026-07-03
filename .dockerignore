@@ -1,0 +1,10 @@
+.git
+.env
+.env.*
+AGENTS.md
+data
+workspace
+secrets
+.venv
+node_modules
+*.log

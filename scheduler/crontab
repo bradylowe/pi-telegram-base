@@ -1,0 +1,12 @@
+# Pi agent scheduler.
+#
+# This file is watched by /workspace/scheduler/agent-cron-runner.js and reloads
+# automatically after edits. No container restart is required.
+#
+# Supported schedules:
+#   */5 * * * * bash /workspace/scheduler/jobs/example-shell-job.sh
+#   0 9 * * * cd /workspace && pi -p "Summarize today's queued reminders."
+#   @every 5m bash /workspace/scheduler/jobs/example-shell-job.sh
+#   @hourly cd /workspace && pi -p "Check scheduled objectives."
+#
+# Put reusable shell scripts under /workspace/scheduler/jobs.
