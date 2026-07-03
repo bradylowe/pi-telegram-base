@@ -23,8 +23,8 @@ RUN npm install -g playwright @playwright/test \
   && playwright install --with-deps chromium \
   && chmod -R a+rX "$PLAYWRIGHT_BROWSERS_PATH"
 
-COPY start-pi.sh connect-to-pi-tmux.sh start-pi-scheduler.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/start-pi.sh /usr/local/bin/connect-to-pi-tmux.sh /usr/local/bin/start-pi-scheduler.sh
+COPY start-pi.sh connect-to-pi-tmux.sh start-pi-scheduler.sh start-pi-telegram-autoconnect.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/start-pi.sh /usr/local/bin/connect-to-pi-tmux.sh /usr/local/bin/start-pi-scheduler.sh /usr/local/bin/start-pi-telegram-autoconnect.sh
 
 USER node
 WORKDIR /workspace

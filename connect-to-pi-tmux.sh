@@ -9,6 +9,7 @@ cd "$WORKDIR"
 
 if ! tmux has-session -t "$SESSION" 2>/dev/null; then
   tmux new-session -d -s "$SESSION" "pi"
+  /usr/local/bin/start-pi-telegram-autoconnect.sh
 fi
 
 exec tmux attach-session -t "$SESSION"

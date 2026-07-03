@@ -199,7 +199,7 @@ Be careful with `docker compose config`: it prints resolved environment values. 
 
 ## Telegram
 
-`PI_TELEGRAM_AUTOCONNECT=1` is enabled by default in `.env.example`. Install the Telegram adapter once into the persisted Pi home volume:
+`PI_TELEGRAM_AUTOCONNECT=1` is enabled by default in `.env.example`, and `PI_TELEGRAM_AUTOCONNECT_DELAY_SECONDS` controls how long startup waits before sending `/telegram-connect` into the tmux session. Install the Telegram adapter once into the persisted Pi home volume:
 
 ```bash
 docker compose exec pi-agent pi install npm:@llblab/pi-telegram
