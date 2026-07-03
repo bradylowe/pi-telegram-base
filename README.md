@@ -199,6 +199,21 @@ Be careful with `docker compose config`: it prints resolved environment values. 
 
 ## Telegram
 
-`PI_TELEGRAM_AUTOCONNECT=1` is enabled by default in `.env.example`. The Telegram token itself is created by the Pi Telegram setup flow and stored under the persisted Pi home volume, normally `data/pi-home`. That directory is ignored by git.
+`PI_TELEGRAM_AUTOCONNECT=1` is enabled by default in `.env.example`. Install the Telegram adapter once into the persisted Pi home volume:
 
-Run `/telegram-setup` once inside an interactive Pi session, then restart the container.
+```bash
+docker compose exec pi-agent pi install npm:@llblab/pi-telegram
+```
+
+Then reconnect to Pi and run the setup/connect commands inside the interactive session:
+
+```text
+/telegram-setup
+/telegram-connect
+```
+
+The Telegram token is created by the setup flow and stored under the persisted Pi home volume, normally `data/pi-home`. That directory is ignored by git. After setup, restart the container so autoconnect can pick it up on future starts:
+
+```bash
+docker compose restart pi-agent
+```

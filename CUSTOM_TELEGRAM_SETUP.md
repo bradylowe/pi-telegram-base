@@ -60,7 +60,7 @@ telegram connected
 
 ### Porting To Another Project
 
-1. Install `pi-telegram`.
+1. Install the Telegram adapter with `pi install npm:@llblab/pi-telegram`.
 2. Add `PI_TELEGRAM_AUTOCONNECT=1` to the container/runtime environment.
 3. Persist `~/.pi/agent` as a volume so `telegram.json` survives restarts.
 4. Run `/telegram-setup` once, then restart the container.
