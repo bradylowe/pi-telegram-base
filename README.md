@@ -78,16 +78,70 @@ By default, the container stores workspace data under `./data`:
 - `./skills` mounted read-only at `/home/node/.pi/agent/skills`
 - `./scheduler` mounted read-write at `/workspace/scheduler` in `pi-agent`
 
-For private project checkouts, either clone them inside `/workspace` after the container starts or add machine-local overrides in `docker-compose.override.yml`. Keep override files private if they expose local paths.
+`WORKTREES_DIR` is configurable in `.env`. The repo-local default is convenient for first run, but for real project checkouts prefer an external path such as `../worktrees` so git repositories are not nested inside this public repo:
 
-Example override:
+```env
+WORKTREES_DIR=../worktrees
+```
+
+For existing private repositories, use a machine-local `docker-compose.override.yml` to mount only the specific repos this agent should access. Docker Compose loads that file automatically, and this repo ignores it so local paths stay private.
+
+Create a local override from the example:
+
+```bash
+cp docker-compose.override.example.yml docker-compose.override.yml
+```
+
+Then edit `docker-compose.override.yml` and list only the repos this agent should access:
 
 ```yaml
 services:
   pi-agent:
     volumes:
-      - /host/path/to/private-repo:/workspace/private-repo
+      - /host/path/to/private-repo:/workspace/external/private-repo
+      - /host/path/to/another-repo:/workspace/external/another-repo
 ```
+
+Inside Pi, those repos will be available under `/workspace/external/<repo-name>`.
+
+## Local Models With Ollama
+
+The included `extensions/ollama-provider.ts` registers host Ollama as a Pi model provider named `ollama`. It uses Ollama's OpenAI-compatible endpoint at `OLLAMA_BASE_URL` plus `/v1`.
+
+The default `.env.example` values expect Ollama on the Docker host:
+
+```env
+PI_OLLAMA_ENABLED=1
+OLLAMA_BASE_URL=http://host.docker.internal:11434
+OLLAMA_MODEL=gemma4:26b-64k
+```
+
+On the host, make sure Ollama is running and has at least one model pulled:
+
+```bash
+ollama list
+ollama pull gemma4:26b-64k
+```
+
+On Linux, containers may need Ollama bound to an address they can reach:
+
+```bash
+OLLAMA_HOST=0.0.0.0:11434 ollama serve
+```
+
+When Pi starts, the extension registers `OLLAMA_MODELS` or `OLLAMA_MODEL` first, then appends installed models discovered from `GET /api/tags`. Use a comma-separated list when you want to prefer multiple local models:
+
+```env
+OLLAMA_MODELS=gemma4:26b-64k,qwen2.5-coder:7b
+```
+
+Select a local model from inside Pi with `/model`, or start directly with:
+
+```bash
+pi --provider ollama --model gemma4:26b-64k
+```
+
+Disable the Ollama provider with `PI_OLLAMA_ENABLED=0`.
 
 ## Homemade Pi Extensions
 
@@ -145,6 +199,21 @@ Be careful with `docker compose config`: it prints resolved environment values. 
 
 ## Telegram
 
-`PI_TELEGRAM_AUTOCONNECT=1` is enabled by default in `.env.example`. The Telegram token itself is created by the Pi Telegram setup flow and stored under the persisted Pi home volume, normally `data/pi-home`. That directory is ignored by git.
+`PI_TELEGRAM_AUTOCONNECT=1` is enabled by default in `.env.example`, and `PI_TELEGRAM_AUTOCONNECT_DELAY_SECONDS` controls how long startup waits before sending `/telegram-connect` into the tmux session. Install the Telegram adapter once into the persisted Pi home volume:
 
-Run `/telegram-setup` once inside an interactive Pi session, then restart the container.
+```bash
+docker compose exec pi-agent pi install npm:@llblab/pi-telegram
+```
+
+Then reconnect to Pi and run the setup/connect commands inside the interactive session:
+
+```text
+/telegram-setup
+/telegram-connect
+```
+
+The Telegram token is created by the setup flow and stored under the persisted Pi home volume, normally `data/pi-home`. That directory is ignored by git. After setup, restart the container so autoconnect can pick it up on future starts:
+
+```bash
+docker compose restart pi-agent
+```

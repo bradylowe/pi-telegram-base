@@ -1,0 +1,7 @@
+services:
+  pi-agent:
+    volumes:
+      # Mount only the external repositories this agent should access.
+      # Keep this file local by copying it to docker-compose.override.yml.
+      - /host/path/to/repo-one:/workspace/external/repo-one
+      - /host/path/to/repo-two:/workspace/external/repo-two

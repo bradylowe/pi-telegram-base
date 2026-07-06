@@ -13,6 +13,7 @@ scheduler/logs/
 
 # Local-only agent/workspace instructions
 AGENTS.md
+docker-compose.override.yml
 
 # Build, editor, and OS noise
 .venv/
