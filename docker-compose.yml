@@ -24,6 +24,7 @@ services:
       - ${WORKSPACE_DIR:-./data/workspace}:/workspace
       - ${WORKTREES_DIR:-./data/worktrees}:/workspace/worktrees
       - ${WORKSPACE_AGENTS_DIR:-./data/workspace-agents}:/workspace/.agents
+      - ${TOPICS_DIR:-./data/workspace/topics}:/workspace/topics
       - ${PI_SCHEDULER_DIR:-./scheduler}:/workspace/scheduler
       - ${PI_SSH_DIR:-./secrets/ssh}:/home/node/.ssh:ro
       - ${AGENTS_FILE:-./AGENTS.example.md}:/workspace/AGENTS.md:ro
